@@ -1,0 +1,36 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  li {
+    padding: 10px;
+    margin: 5px;
+    background: #f4f4f4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .completed {
+    text-decoration: line-through;
+    color: gray;
+  }
+
+  .text_holder{
+    overflow-x: auto;
+    flex-basis: 90%;
+    min-height: 2rem;
+    white-space: normal;  /* Allow text to wrap */
+    word-wrap: break-word;  /* Break long words */
+    overflow-wrap: break-word;  /* Ensures words break */
+  }
+  
+  .button_holder{
+    flex-basis: 10%;
+  }

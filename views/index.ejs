@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>To-Do List</h1>
+
+  <form action="/add" method="POST">
+    <input type="text" name="title" placeholder="Thêm công việc..." required>
+    <button type="submit">Thêm</button>
+  </form>
+
+  <ul>
+    <% tasks.forEach(task => { %>
+      <li class="<%= task.completed ? 'completed' : '' %>">
+       <div class="text_holder">
+        <%= task.title %>
+       </div>
+        <div class="button_holder">
+          <% if (!task.completed) { %>
+            <form action="/complete/<%= task.id %>" method="POST" style="display:inline;">
+              <button type="submit">✔️</button>
+            </form>
+          <% } %>
+          <form action="/delete/<%= task.id %>" method="POST" style="display:inline;">
+            <button type="submit">🗑</button>
+          </form>
+        </div>
+      </li>
+    <% }); %>
+  </ul>
+</body>
+</html>
