@@ -38,9 +38,21 @@ const requireLogin = (req, res, next) => {
 
 // Trang chủ - Hiển thị danh sách công việc (chỉ user đã đăng nhập)
 app.get("/", requireLogin, (req, res) => {
-  const tasks = readFile(TASKS_FILE).filter(task => task.user === req.session.user.username);
-  res.render("index", { tasks, user: req.session.user });
+  const tasks = readFile(TASKS_FILE).filter(
+    task => task.user === req.session.user.username
+  );
+
+  const page = parseInt(req.query.page) || 1; // Trang hiện tại
+  const perPage = 3; // Số task mỗi trang
+  const totalTasks = tasks.length;
+  const totalPages = Math.ceil(totalTasks / perPage) || 1;
+
+  // Lấy danh sách task thuộc trang hiện tại
+  const paginatedTasks = tasks.slice((page - 1) * perPage, page * perPage);
+
+  res.render("index", { tasks: paginatedTasks, page, totalPages, user: req.session.user });
 });
+
 
 // Trang đăng ký
 app.get("/register", (req, res) => {

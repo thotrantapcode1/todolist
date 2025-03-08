@@ -34,5 +34,19 @@
       </li>
     <% }); %>
   </ul>
+
+  <!-- PHÂN TRANG -->
+  <div class="pagination">
+    <% if (page > 1) { %>
+      <a href="/?page=<%= page - 1 %>">⬅ Trang trước</a>
+    <% } %>
+    
+    <span>Trang <%= page %> / <%= totalPages %></span>
+
+    <% if (page < totalPages) { %>
+      <a href="/?page=<%= page + 1 %>">Trang sau ➡</a>
+    <% } %>
+  </div>
+
 </body>
 </html>

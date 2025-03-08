@@ -32,15 +32,17 @@
     </table>
 
     <h2>Danh sách Công việc</h2>
-    <ul>
+    <ul class="task-list">
         <% tasks.forEach(task => { %>
             <li>
-                <%= task.title %> - <strong><%= task.user %></strong>
+                <span class="task-title"><%= task.title %></span>
+                <span class="task-user"><strong>Người tạo:</strong> <%= task.user %></span>
                 <form action="/admin/delete-task/<%= task.id %>" method="POST" style="display:inline;">
-                    <button type="submit">Xóa</button>
+                    <button type="submit">🗑 Xóa</button>
                 </form>
             </li>
         <% }); %>
     </ul>
+
 </body>
 </html>
