@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+    <h1>Quản lý hệ thống</h1>
+    <p>Xin chào, <%= admin.username %>! <a href="/logout">Đăng xuất</a></p>
+
+    <h2>Danh sách Người dùng</h2>
+    <table>
+        <tr>
+            <th>Tên người dùng</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
+        <% users.forEach(user => { %>
+            <tr>
+                <td><%= user.username %></td>
+                <td><%= user.banned ? "Bị khóa" : "Hoạt động" %></td>
+                <td>
+                    <% if (user.username !== "admin") { %>
+                        <form action="/admin/toggle-ban/<%= user.username %>" method="POST">
+                            <button type="submit"><%= user.banned ? "Mở khóa" : "Khóa" %></button>
+                        </form>
+                    <% } %>
+                </td>
+            </tr>
+        <% }); %>
+    </table>
+
+    <h2>Danh sách Công việc</h2>
+    <ul>
+        <% tasks.forEach(task => { %>
+            <li>
+                <%= task.title %> - <strong><%= task.user %></strong>
+                <form action="/admin/delete-task/<%= task.id %>" method="POST" style="display:inline;">
+                    <button type="submit">Xóa</button>
+                </form>
+            </li>
+        <% }); %>
+    </ul>
+</body>
+</html>

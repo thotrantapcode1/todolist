@@ -1,10 +1,12 @@
 [
   {
-    "username": "abc",
-    "password": "$2b$10$bVJm/uswzsUdvysHZu7RieDrbibfMEEVrBWluvp0TI1uJq.LyfGde"
+    "username": "admin",
+    "password": "$2b$10$sp3kHKQYBK.GCbT/wgn9Wuvgy8p1fKxz7H.0h83jByb64CAO65oCu",
+    "role": "admin"
   },
   {
-    "username": "abd",
-    "password": "$2b$10$h1yZjVnXvL0c2nNpVSDsL.0Obov9EyMsxmhEmu3ub1vgeg/Bixjkm"
+    "username": "abc",
+    "password": "$2b$10$/D941frtElfamcli7F0yL.oBFOhhFpOEwjgcNmm3El3Em9UrNwtL6",
+    "banned": true
   }
 ]

@@ -1,0 +1,43 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+table {
+    width: 80%;
+    margin: auto;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+button {
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #c82333;
+}
+
+/* Nút mở khóa */
+button:contains("Mở khóa") {
+    background-color: #28a745;
+}
+
+button:contains("Mở khóa"):hover {
+    background-color: #218838;
+}

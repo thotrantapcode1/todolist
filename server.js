@@ -79,10 +79,15 @@ app.post("/login", (req, res) => {
   if (!user || !bcrypt.compareSync(password, user.password)) {
     return res.send("Sai tài khoản hoặc mật khẩu!");
   }
+  if (user.banned) {
+    return res.render("banned");
+}
 
-  req.session.user = { username };
-  res.redirect("/");
+  
+  req.session.user = { username: user.username, role: user.role };
+  res.redirect(user.role === "admin" ? "/admin" : "/");
 });
+
 
 // Xử lý đăng xuất
 app.get("/logout", (req, res) => {
@@ -123,6 +128,36 @@ app.post("/delete/:id", requireLogin, (req, res) => {
   writeFile(TASKS_FILE, tasks);
   res.redirect("/");
 });
+
+const requireAdmin = (req, res, next) => {
+  if (!req.session.user || req.session.user.role !== "admin") {
+    return res.send("Bạn không có quyền truy cập!");
+  }
+  next();
+};
+
+app.get("/admin", requireAdmin, (req, res) => {
+  const users = readFile(USERS_FILE);
+  const tasks = readFile(TASKS_FILE);
+  res.render("admin", { users, tasks, admin: req.session.user });
+});
+
+app.post("/admin/delete-task/:id", requireAdmin, (req, res) => {
+  let tasks = readFile(TASKS_FILE);
+  tasks = tasks.filter(task => task.id != req.params.id);
+  writeFile(TASKS_FILE, tasks);
+  res.redirect("/admin");
+});
+
+app.post("/admin/toggle-ban/:username", requireAdmin, (req, res) => {
+  let users = readFile(USERS_FILE);
+  users = users.map(user => 
+    user.username === req.params.username ? { ...user, banned: !user.banned } : user
+  );
+  writeFile(USERS_FILE, users);
+  res.redirect("/admin");
+});
+
 
 // Khởi chạy server
 app.listen(3000, () => {
