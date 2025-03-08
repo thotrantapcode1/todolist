@@ -7,7 +7,7 @@
   {
     "username": "abc",
     "password": "$2b$10$/D941frtElfamcli7F0yL.oBFOhhFpOEwjgcNmm3El3Em9UrNwtL6",
-    "banned": false
+    "banned": true
   },
   {
     "username": "abd",

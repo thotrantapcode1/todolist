@@ -83,22 +83,28 @@ app.get("/login", (req, res) => {
 });
 
 // Xử lý đăng nhập
+// Xử lý đăng nhập
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
   const users = readFile(USERS_FILE);
   const user = users.find((u) => u.username === username);
 
-  if (!user || !bcrypt.compareSync(password, user.password)) {
-    return res.send("Sai tài khoản hoặc mật khẩu!");
+  if (!user) {
+    return res.render("login_error", { message: "Tài khoản không tồn tại!" });
   }
+
+  if (!bcrypt.compareSync(password, user.password)) {
+    return res.render("login_error", { message: "Sai mật khẩu!" });
+  }
+
   if (user.banned) {
     return res.render("banned");
-}
+  }
 
-  
   req.session.user = { username: user.username, role: user.role };
   res.redirect(user.role === "admin" ? "/admin" : "/");
 });
+
 
 
 // Xử lý đăng xuất
