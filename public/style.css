@@ -1,36 +1,140 @@
+/* Thiết lập chung */
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-  }
-  
-  ul {
-    list-style: none;
-    padding: 0;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 20px;
+}
+
+/* Tiêu đề */
+h1 {
+  color: #333;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+/* Form nhập công việc */
+form {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+input[type="text"] {
+  width: 60%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+}
+
+button {
+  padding: 10px 15px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  background-color: #28a745;
+  color: white;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+/* Danh sách công việc */
+ul {
+  list-style: none;
+  padding: 0;
+  max-width: 600px;
+  margin: auto;
+}
+
+li {
+  padding: 15px;
+  margin: 5px 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.3s;
+}
+
+li:hover {
+  background: #f1f1f1;
+}
+
+/* Công việc đã hoàn thành */
+.completed {
+  text-decoration: line-through;
+  color: gray;
+  opacity: 0.7;
+}
+
+/* Ô chứa nội dung công việc */
+.text_holder {
+  overflow-x: auto;
+  flex-basis: 85%;
+  min-height: 2rem;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: left;
+  font-size: 1rem;
+  padding-left: 10px;
+}
+
+/* Nút thao tác */
+.button_holder {
+  flex-basis: 15%;
+  display: flex;
+  gap: 5px;
+}
+
+.button_holder button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 7px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: 0.3s;
+}
+
+.button_holder button:hover {
+  background-color: #c82333;
+}
+
+/* Nút hoàn thành */
+.button_holder .complete-btn {
+  background-color: #007bff;
+}
+
+.button_holder .complete-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  input[type="text"] {
+      width: 80%;
   }
   
   li {
-    padding: 10px;
-    margin: 5px;
-    background: #f4f4f4;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .completed {
-    text-decoration: line-through;
-    color: gray;
+      flex-direction: column;
+      align-items: flex-start;
   }
 
-  .text_holder{
-    overflow-x: auto;
-    flex-basis: 90%;
-    min-height: 2rem;
-    white-space: normal;  /* Allow text to wrap */
-    word-wrap: break-word;  /* Break long words */
-    overflow-wrap: break-word;  /* Ensures words break */
+  .button_holder {
+      margin-top: 10px;
+      justify-content: flex-end;
+      width: 100%;
   }
-  
-  .button_holder{
-    flex-basis: 10%;
-  }
+}

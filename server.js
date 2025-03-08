@@ -2,56 +2,125 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const bodyParser = require("body-parser");
+const bcrypt = require("bcryptjs");
+const session = require("express-session");
 
 const app = express();
-const DATA_FILE = path.join(__dirname, "tasks.json");
+const USERS_FILE = path.join(__dirname, "data", "users.json");
+const TASKS_FILE = path.join(__dirname, "data", "tasks.json");
 
 // Cấu hình EJS & Body-parser
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-// Hàm đọc dữ liệu từ file JSON
-const readTasks = () => {
-  const data = fs.readFileSync(DATA_FILE, "utf8");
-  return JSON.parse(data);
+// Cấu hình session
+app.use(
+  session({
+    secret: "mysecretkey",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+// Hàm đọc & ghi file JSON
+const readFile = (filePath) => JSON.parse(fs.readFileSync(filePath, "utf8"));
+const writeFile = (filePath, data) =>
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf8");
+
+// Middleware kiểm tra đăng nhập
+const requireLogin = (req, res, next) => {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
+  next();
 };
 
-// Hàm ghi dữ liệu vào file JSON
-const writeTasks = (tasks) => {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(tasks, null, 2), "utf8");
-};
-
-// Trang chủ - Hiển thị danh sách công việc
-app.get("/", (req, res) => {
-  const tasks = readTasks();
-  res.render("index.ejs", { tasks });
+// Trang chủ - Hiển thị danh sách công việc (chỉ user đã đăng nhập)
+app.get("/", requireLogin, (req, res) => {
+  const tasks = readFile(TASKS_FILE).filter(task => task.user === req.session.user.username);
+  res.render("index", { tasks, user: req.session.user });
 });
 
-// Thêm công việc
-app.post("/add", (req, res) => {
-  const tasks = readTasks();
-  const newTask = { id: Date.now(), title: req.body.title, completed: false };
+// Trang đăng ký
+app.get("/register", (req, res) => {
+  res.render("register");
+});
+
+// Xử lý đăng ký
+app.post("/register", (req, res) => {
+  const { username, password } = req.body;
+  let users = readFile(USERS_FILE);
+
+  // Kiểm tra user đã tồn tại chưa
+  if (users.find((user) => user.username === username)) {
+    return res.send("Username đã tồn tại!");
+  }
+
+  // Mã hóa mật khẩu
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  users.push({ username, password: hashedPassword });
+  writeFile(USERS_FILE, users);
+
+  res.redirect("/login");
+});
+
+// Trang đăng nhập
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
+// Xử lý đăng nhập
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+  const users = readFile(USERS_FILE);
+  const user = users.find((u) => u.username === username);
+
+  if (!user || !bcrypt.compareSync(password, user.password)) {
+    return res.send("Sai tài khoản hoặc mật khẩu!");
+  }
+
+  req.session.user = { username };
+  res.redirect("/");
+});
+
+// Xử lý đăng xuất
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/login");
+});
+
+// Thêm công việc (chỉ user đã đăng nhập)
+app.post("/add", requireLogin, (req, res) => {
+  const tasks = readFile(TASKS_FILE);
+  const newTask = {
+    id: Date.now(),
+    title: req.body.title,
+    completed: false,
+    user: req.session.user.username
+  };
   tasks.push(newTask);
-  writeTasks(tasks);
+  writeFile(TASKS_FILE, tasks);
   res.redirect("/");
 });
 
 // Đánh dấu hoàn thành công việc
-app.post("/complete/:id", (req, res) => {
-  let tasks = readTasks();
+app.post("/complete/:id", requireLogin, (req, res) => {
+  let tasks = readFile(TASKS_FILE);
   tasks = tasks.map(task =>
-    task.id == req.params.id ? { ...task, completed: true } : task
+    task.id == req.params.id && task.user === req.session.user.username
+      ? { ...task, completed: true }
+      : task
   );
-  writeTasks(tasks);
+  writeFile(TASKS_FILE, tasks);
   res.redirect("/");
 });
 
 // Xóa công việc
-app.post("/delete/:id", (req, res) => {
-  let tasks = readTasks();
-  tasks = tasks.filter(task => task.id != req.params.id);
-  writeTasks(tasks);
+app.post("/delete/:id", requireLogin, (req, res) => {
+  let tasks = readFile(TASKS_FILE);
+  tasks = tasks.filter(task => task.id != req.params.id || task.user !== req.session.user.username);
+  writeFile(TASKS_FILE, tasks);
   res.redirect("/");
 });
 
